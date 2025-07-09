@@ -4,7 +4,7 @@ set -e  # Exit on error
 
 echo "🔧 Installing core packages..."
 sudo pacman -Syu --noconfirm \
-  kitty hyprland waybar rofi neofetch \
+  kitty hyprland waybar rofi \
   ttf-jetbrains-mono \
   noto-fonts \
   network-manager-applet \
@@ -12,6 +12,8 @@ sudo pacman -Syu --noconfirm \
   xdg-desktop-portal-hyprland \
   sddm \
   unzip git base-devel
+
+yay -S --noconfirm neofetch
 
 # Optional AUR packages
 if ! command -v yay &> /dev/null; then
