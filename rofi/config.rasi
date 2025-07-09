@@ -9,5 +9,4 @@ configuration {
   width: 30;
   lines: 7;
   padding: 20;
-  theme: "theme";
 }

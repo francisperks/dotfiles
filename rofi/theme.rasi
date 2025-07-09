@@ -6,6 +6,7 @@
   font: "JetBrainsMono Nerd Font 11";
   padding: 10;
   border: 2px;
+  background: red;
 }
 
 window {
