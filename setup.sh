@@ -10,7 +10,7 @@ for arg in "$@"
 do
   if [ "$arg" == "--dev" ]; then
     DEV_MODE=1
-    echo "🧪 Dev mode enabled: using wofi instead of rofi"
+    echo "🧪 Dev mode enabled: applying VirtualBox fixes"
   fi
 done
 
@@ -18,33 +18,18 @@ done
 # 📦 Base packages
 # ─────────────────────────────────────────
 install_base() {
-  if [ $DEV_MODE -eq 1 ]; then
-    sudo pacman -Syu --noconfirm \
-      hyprland \
-      kitty wofi waybar \
-      networkmanager network-manager-applet \
-      xdg-desktop-portal xdg-desktop-portal-hyprland \
-      pipewire pipewire-pulse wireplumber \
-      wl-clipboard \
-      noto-fonts ttf-jetbrains-mono \
-      playerctl pavucontrol unzip git base-devel \
-      grim slurp swappy \
-      polkit-gnome \
-      sddm
-  else
-    sudo pacman -Syu --noconfirm \
-      hyprland \
-      kitty rofi waybar \
-      networkmanager network-manager-applet \
-      xdg-desktop-portal xdg-desktop-portal-hyprland \
-      pipewire pipewire-pulse wireplumber \
-      wl-clipboard \
-      noto-fonts ttf-jetbrains-mono \
-      playerctl pavucontrol unzip git base-devel \
-      grim slurp swappy \
-      polkit-gnome \
-      sddm
-  fi
+  sudo pacman -Syu --noconfirm \
+    hyprland \
+    kitty wofi waybar \
+    networkmanager network-manager-applet \
+    xdg-desktop-portal xdg-desktop-portal-hyprland \
+    pipewire pipewire-pulse wireplumber \
+    wl-clipboard \
+    noto-fonts ttf-jetbrains-mono \
+    playerctl pavucontrol unzip git base-devel \
+    grim slurp swappy \
+    polkit-gnome \
+    sddm
 }
 install_base
 
@@ -70,7 +55,7 @@ install_aur
 # 🔗 Dotfiles symlinks
 # ─────────────────────────────────────────
 link_configs() {
-  for cfg in kitty waybar hypr; do
+  for cfg in kitty wofi waybar hypr; do
     target="$HOME/.config/$cfg"
     source="$HOME/dotfiles/$cfg"
 
@@ -81,21 +66,6 @@ link_configs() {
       echo "✅ Linked $cfg config"
     fi
   done
-
-  if [ $DEV_MODE -eq 1 ]; then
-    target="$HOME/.config/wofi"
-    source="$HOME/dotfiles/wofi"
-  else
-    target="$HOME/.config/rofi"
-    source="$HOME/dotfiles/rofi"
-  fi
-
-  if [ -L "$target" ] || [ -d "$target" ]; then
-    echo "⚠️  $(basename $target) already exists, skipping..."
-  else
-    ln -s "$source" "$target"
-    echo "✅ Linked $(basename $target) config"
-  fi
 }
 link_configs
 
@@ -110,6 +80,18 @@ setup_kitty_themes() {
   fi
 }
 setup_kitty_themes
+
+# ─────────────────────────────────────────
+# ⚙️ Dev mode fixes for virtual machines
+# ─────────────────────────────────────────
+apply_dev_fixes() {
+  if [ $DEV_MODE -eq 1 ]; then
+    echo "export LIBGL_ALWAYS_SOFTWARE=1" >> ~/.bash_profile
+    echo "export WLR_NO_HARDWARE_CURSORS=1" >> ~/.bash_profile
+    echo "✅ VirtualBox graphics fixes applied"
+  fi
+}
+apply_dev_fixes
 
 # ─────────────────────────────────────────
 # ⚡ Enable system services
