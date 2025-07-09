@@ -1,53 +1,82 @@
 #!/bin/bash
+set -e
 
-set -e  # Exit on error
+echo "🚀 Starting full Hyprland setup on minimal Arch..."
 
-echo "🔧 Installing core packages..."
-sudo pacman -Syu --noconfirm \
-  kitty hyprland waybar rofi \
-  ttf-jetbrains-mono \
-  noto-fonts \
-  network-manager-applet \
-  wl-clipboard \
-  xdg-desktop-portal-hyprland \
-  sddm \
-  unzip git base-devel
+# ─────────────────────────────────────────
+# 📦 Base packages
+# ─────────────────────────────────────────
+install_base() {
+  sudo pacman -Syu --noconfirm \
+    hyprland \
+    kitty rofi waybar \
+    networkmanager network-manager-applet \
+    xdg-desktop-portal xdg-desktop-portal-hyprland \
+    pipewire pipewire-pulse wireplumber \
+    wl-clipboard \
+    noto-fonts ttf-jetbrains-mono \
+    playerctl pavucontrol unzip git base-devel \
+    grim slurp swappy \
+    polkit-gnome \
+    sddm
+}
+install_base
 
-yay -S --noconfirm neofetch
-
-# Optional AUR packages
-if ! command -v yay &> /dev/null; then
-  echo "📦 Installing yay..."
-  git clone https://aur.archlinux.org/yay.git ~/yay
-  (cd ~/yay && makepkg -si --noconfirm)
-fi
-
-yay -S --noconfirm \
-  ttf-jetbrains-mono-nerd \
-  wlogout
-
-echo "📁 Creating config symlinks..."
-CONFIGS=("kitty" "hypr" "waybar" "rofi")
-
-for dir in "${CONFIGS[@]}"; do
-  target="$HOME/.config/$dir"
-  src="$HOME/dotfiles/$dir"
-  
-  if [ -L "$target" ] || [ -d "$target" ]; then
-    echo "⚠️  Skipping existing $target"
-  else
-    ln -s "$src" "$target"
-    echo "✅ Linked $src → $target"
+# ─────────────────────────────────────────
+# 📦 AUR (yay + nerd fonts + vscode + wlogout)
+# ─────────────────────────────────────────
+install_aur() {
+  if ! command -v yay &>/dev/null; then
+    echo "📦 Installing yay..."
+    git clone https://aur.archlinux.org/yay.git ~/yay
+    (cd ~/yay && makepkg -si --noconfirm)
   fi
-done
 
-# Kitty theme loader
-if [ -d "$HOME/.config/kitty-themes" ]; then
-  echo "🎨 Kitty themes already cloned"
-else
-  git clone https://github.com/dexpota/kitty-themes ~/.config/kitty-themes
-  cp ~/.config/kitty-themes/themes/Dracula.conf ~/.config/kitty/theme.conf
-  echo "include theme.conf" >> ~/.config/kitty/kitty.conf
-fi
+  yay -S --noconfirm \
+    ttf-jetbrains-mono-nerd \
+    visual-studio-code-bin \
+    wlogout \
+    neofetch
+}
+install_aur
 
-echo "✅ Setup complete. Reboot or log out to start Hyprland."
+# ─────────────────────────────────────────
+# 🔗 Dotfiles symlinks
+# ─────────────────────────────────────────
+link_configs() {
+  for cfg in kitty rofi waybar hypr; do
+    target="$HOME/.config/$cfg"
+    source="$HOME/dotfiles/$cfg"
+
+    if [ -L "$target" ] || [ -d "$target" ]; then
+      echo "⚠️  $cfg already exists, skipping..."
+    else
+      ln -s "$source" "$target"
+      echo "✅ Linked $cfg config"
+    fi
+  done
+}
+link_configs
+
+# ─────────────────────────────────────────
+# 🎨 Kitty themes
+# ─────────────────────────────────────────
+setup_kitty_themes() {
+  if [ ! -d "$HOME/.config/kitty-themes" ]; then
+    git clone https://github.com/dexpota/kitty-themes ~/.config/kitty-themes
+    cp ~/.config/kitty-themes/themes/Dracula.conf ~/.config/kitty/theme.conf
+    echo "include theme.conf" >> ~/.config/kitty/kitty.conf
+  fi
+}
+setup_kitty_themes
+
+# ─────────────────────────────────────────
+# ⚡ Enable system services
+# ─────────────────────────────────────────
+enable_services() {
+  sudo systemctl enable NetworkManager
+  sudo systemctl enable sddm
+}
+enable_services
+
+echo "✅ All done! Reboot and log in via SDDM into Hyprland. Enjoy your rice 🍚"
