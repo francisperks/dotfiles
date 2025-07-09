@@ -73,10 +73,17 @@ link_configs
 # 🎨 Kitty themes
 # ─────────────────────────────────────────
 setup_kitty_themes() {
-  if [ ! -d "$HOME/.config/kitty-themes" ]; then
+  echo -n "🎨 Do you want to install additional kitty themes from GitHub? (y/N): "
+  read -r install_themes
+
+  if [[ "$install_themes" =~ ^[Yy]$ ]]; then
+    echo "📥 Cloning kitty themes..."
     git clone https://github.com/dexpota/kitty-themes ~/.config/kitty-themes
     cp ~/.config/kitty-themes/themes/Dracula.conf ~/.config/kitty/theme.conf
     echo "include theme.conf" >> ~/.config/kitty/kitty.conf
+    echo "✅ Kitty themes installed"
+  else
+    echo "🎨 Skipping kitty themes, using default from dotfiles"
   fi
 }
 setup_kitty_themes
