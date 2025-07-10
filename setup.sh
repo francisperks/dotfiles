@@ -77,16 +77,20 @@ setup_kitty_themes() {
   read -r install_themes
 
   if [[ "$install_themes" =~ ^[Yy]$ ]]; then
-    echo "📥 Cloning kitty themes..."
-    git clone https://github.com/dexpota/kitty-themes ~/.config/kitty-themes
+    if [ -d "$HOME/.config/kitty-themes/.git" ]; then
+      echo "📥 Kitty themes already exist, pulling latest changes..."
+      git -C "$HOME/.config/kitty-themes" pull
+    else
+      echo "📥 Cloning kitty themes..."
+      git clone https://github.com/dexpota/kitty-themes ~/.config/kitty-themes
+    fi
     cp ~/.config/kitty-themes/themes/Afterglow.conf ~/.config/kitty/theme.conf
     grep -qxF "include theme.conf" ~/.config/kitty/kitty.conf || echo "include theme.conf" >> ~/.config/kitty/kitty.conf
     export KITTY_THEMES_INSTALLED=1
-    echo "✅ Kitty themes installed"
+    echo "✅ Kitty themes ready"
   else
     export KITTY_THEMES_INSTALLED=0
     echo "🎨 Skipping kitty themes, using default from dotfiles"
-
   fi
 }
 setup_kitty_themes
