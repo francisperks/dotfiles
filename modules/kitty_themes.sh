@@ -11,8 +11,13 @@ setup_kitty_themes() {
 
     # Ensure kitty config directory exists
     mkdir -p "$HOME/.config/kitty" 2>/dev/null
-    cp "$HOME/.config/kitty-themes/themes/Afterglow.conf" "$HOME/.config/kitty/theme.conf"
-    grep -qxF "include theme.conf" "$HOME/.config/kitty/kitty.conf" || echo "include theme.conf" >> "$HOME/.config/kitty/kitty.conf"
+    THEME_FILE="$HOME/.config/kitty-themes/themes/Afterglow.conf"
+    if [ -f "$THEME_FILE" ]; then
+      cp "$THEME_FILE" "$HOME/.config/kitty/theme.conf"
+      grep -qxF "include theme.conf" "$HOME/.config/kitty/kitty.conf" || echo "include theme.conf" >> "$HOME/.config/kitty/kitty.conf"
+    else
+      echo "⚠️  Kitty theme file not found: $THEME_FILE. Skipping theme copy."
+    fi
 
     if [ ! -d "$HOME/.config/kitty/themes" ]; then
       ln -s "$HOME/.config/kitty-themes/themes" "$HOME/.config/kitty/themes"
