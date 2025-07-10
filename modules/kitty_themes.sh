@@ -8,17 +8,20 @@ setup_kitty_themes() {
 
   # Ensure kitty config directory exists
   mkdir -p "$HOME/.config/kitty" 2>/dev/null || true
-  THEME_FILE="$HOME/.config/kitty-themes/themes/Afterglow.conf"
-  if [ -f "$THEME_FILE" ]; then
-    cp "$THEME_FILE" "$HOME/.config/kitty/theme.conf" || true
-    grep -qxF "include theme.conf" "$HOME/.config/kitty/kitty.conf" || echo "include theme.conf" >> "$HOME/.config/kitty/kitty.conf"
+  if [ -d "$HOME/.config/kitty" ]; then
+    THEME_FILE="$HOME/.config/kitty-themes/themes/Afterglow.conf"
+    if [ -f "$THEME_FILE" ]; then
+      cp "$THEME_FILE" "$HOME/.config/kitty/theme.conf" || true
+      grep -qxF "include theme.conf" "$HOME/.config/kitty/kitty.conf" || echo "include theme.conf" >> "$HOME/.config/kitty/kitty.conf"
+    else
+      echo "⚠️  Kitty theme file not found: $THEME_FILE. Skipping theme copy."
+    fi
+    if [ ! -d "$HOME/.config/kitty/themes" ]; then
+      ln -s "$HOME/.config/kitty-themes/themes" "$HOME/.config/kitty/themes" || true
+      echo "🔗 Linked kitty themes directory"
+    fi
   else
-    echo "⚠️  Kitty theme file not found: $THEME_FILE. Skipping theme copy."
-  fi
-
-  if [ ! -d "$HOME/.config/kitty/themes" ]; then
-    ln -s "$HOME/.config/kitty-themes/themes" "$HOME/.config/kitty/themes" || true
-    echo "🔗 Linked kitty themes directory"
+    echo "❌ $HOME/.config/kitty is not a directory. Skipping kitty theme setup."
   fi
 
   export KITTY_THEMES_INSTALLED=1

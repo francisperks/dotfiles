@@ -4,6 +4,9 @@
 link_configs() {
   echo "🔗 Linking config directories..."
   
+  # Ensure config/kitty exists before linking
+  mkdir -p "$PWD/config/kitty" 2>/dev/null
+
   for cfg in kitty wofi waybar hypr; do
     ln -sf "$PWD/config/$cfg" "$HOME/.config/$cfg"
     echo "✅ Linked $cfg"
