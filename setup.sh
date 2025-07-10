@@ -17,7 +17,8 @@ sudo pacman -Syu --noconfirm \
   networkmanager network-manager-applet \
   xdg-user-dirs unzip git base-devel \
   noto-fonts ttf-jetbrains-mono playerctl pavucontrol \
-  sddm
+  sddm \
+  ttf-font-awesome ttf-material-icons ttf-nerd-fonts-symbols ttf-nerd-fonts-symbols-mono
 
 # ─────────────────────────────────────────────
 # 🛠️ Enable essential services
