@@ -16,12 +16,43 @@ sudo pacman -Syu --noconfirm \
   wl-clipboard \
   networkmanager network-manager-applet \
   xdg-user-dirs unzip git base-devel \
-  noto-fonts ttf-jetbrains-mono playerctl pavucontrol
+  noto-fonts ttf-jetbrains-mono playerctl pavucontrol \
+  sddm
 
 # ─────────────────────────────────────────────
 # 🛠️ Enable essential services
 # ─────────────────────────────────────────────
 sudo systemctl enable NetworkManager.service
+sudo systemctl enable sddm.service
+
+# ─────────────────────────────────────────────
+# 🖥️ Hyprland session for SDDM
+# ─────────────────────────────────────────────
+sudo tee /usr/share/wayland-sessions/hyprland.desktop > /dev/null <<EOF
+[Desktop Entry]
+Name=Hyprland
+Comment=An intelligent dynamic tiling Wayland compositor
+Exec=Hyprland
+Type=Application
+DesktopNames=Hyprland
+EOF
+
+# ─────────────────────────────────────────────
+# 🔐 Optional: Configure autologin
+# ─────────────────────────────────────────────
+read -p "👉 Enable autologin for user '$USER'? (y/N): " AUTOLOGIN
+if [[ "$AUTOLOGIN" =~ ^[Yy]$ ]]; then
+  sudo mkdir -p /etc/sddm.conf.d
+  sudo tee /etc/sddm.conf.d/hyprland.conf > /dev/null <<EOF
+[Autologin]
+User=$USER
+Session=hyprland
+
+[General]
+Session=hyprland
+EOF
+  echo "✅ Autologin configured for $USER"
+fi
 
 # ─────────────────────────────────────────────
 # 📁 XDG User Directories
@@ -31,7 +62,7 @@ xdg-user-dirs-update
 # ─────────────────────────────────────────────
 # 🔗 Link dotfiles
 # ─────────────────────────────────────────────
-DOTFILES_DIR="$HOME/dotfiles"  # adjust if your repo is elsewhere
+DOTFILES_DIR="$HOME/dotfiles"
 
 if [ -f "$DOTFILES_DIR/local/bin/link-dotfiles.sh" ]; then
   echo "🔗 Running dotfile linker..."
@@ -42,11 +73,6 @@ else
 fi
 
 # ─────────────────────────────────────────────
-# 🎨 Optional: Fonts and Appearance (JetBrains Mono, Noto)
-# ─────────────────────────────────────────────
-# Already installed via pacman above
-
-# ─────────────────────────────────────────────
 # 🎉 Final Message
 # ─────────────────────────────────────────────
-echo "✅ All done! Reboot and log in to Hyprland from your display manager or TTY."
+echo "✅ All done! Reboot and log in to Hyprland via SDDM."
