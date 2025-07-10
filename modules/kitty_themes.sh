@@ -9,7 +9,8 @@ setup_kitty_themes() {
     git -C "$HOME/.config/kitty-themes" pull 2>/dev/null || \
     git clone https://github.com/dexpota/kitty-themes "$HOME/.config/kitty-themes"
 
-    #mkdir -p "$HOME/.config/kitty"
+    # Ensure kitty config directory exists
+    mkdir -p "$HOME/.config/kitty"
     cp "$HOME/.config/kitty-themes/themes/Afterglow.conf" "$HOME/.config/kitty/theme.conf"
     grep -qxF "include theme.conf" "$HOME/.config/kitty/kitty.conf" || echo "include theme.conf" >> "$HOME/.config/kitty/kitty.conf"
 
