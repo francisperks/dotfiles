@@ -54,6 +54,47 @@ install_aur() {
 install_aur
 
 # ─────────────────────────────────────────
+# 🎨 SDDM theme setup
+# ─────────────────────────────────────────
+setup_sddm_theme() {
+  echo "🎨 Setting up SDDM theme..."
+
+  THEME_NAME="sugar-candy"
+  THEME_REPO="https://github.com/sugar-candy/sddm-sugar-candy"
+  LOCAL_THEME_DIR="$PWD/sddm/themes/$THEME_NAME"
+  SYSTEM_THEME_DIR="/usr/share/sddm/themes/$THEME_NAME"
+
+  # Clone theme if not present
+  if [ ! -d "$LOCAL_THEME_DIR" ]; then
+    echo "⬇️  Downloading SDDM theme..."
+    mkdir -p "$(dirname "$LOCAL_THEME_DIR")"
+    git clone --depth 1 "$THEME_REPO" "$LOCAL_THEME_DIR"
+  else
+    echo "✔️  Local theme already exists"
+  fi
+
+  # Symlink into system path
+  sudo mkdir -p /usr/share/sddm/themes
+  sudo ln -sf "$LOCAL_THEME_DIR" "$SYSTEM_THEME_DIR"
+  echo "✅ Symlinked theme to $SYSTEM_THEME_DIR"
+
+  # Ensure /etc/sddm.conf exists and set the theme
+  sudo mkdir -p /etc
+  if [ ! -f /etc/sddm.conf ]; then
+    sudo sddm --example-config | sudo tee /etc/sddm.conf > /dev/null
+  fi
+
+  if grep -q "^\[Theme\]" /etc/sddm.conf; then
+    sudo sed -i "/^\[Theme\]/,/^$/ s|^Current=.*|Current=$THEME_NAME|" /etc/sddm.conf
+  else
+    echo -e "\n[Theme]\nCurrent=$THEME_NAME" | sudo tee -a /etc/sddm.conf > /dev/null
+  fi
+
+  echo "✅ SDDM theme set to '$THEME_NAME'"
+}
+
+
+# ─────────────────────────────────────────
 # 🔗 Dotfiles symlinks
 # ─────────────────────────────────────────
 link_configs() {
@@ -74,6 +115,8 @@ link_configs() {
   ln -sf "$PWD/share/applications/kitty-theme-picker.desktop" "$HOME/.local/share/applications/kitty-theme-picker.desktop"
 }
 link_configs
+setup_sddm_theme
+
 
 # ─────────────────────────────────────────
 # 🎨 Optional: clone kitty-themes repo
