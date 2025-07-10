@@ -80,13 +80,17 @@ setup_kitty_themes() {
     echo "📥 Cloning kitty themes..."
     git clone https://github.com/dexpota/kitty-themes ~/.config/kitty-themes
     cp ~/.config/kitty-themes/themes/Afterglow.conf ~/.config/kitty/theme.conf
-    echo "include theme.conf" >> ~/.config/kitty/kitty.conf
+    grep -qxF "include theme.conf" ~/.config/kitty/kitty.conf || echo "include theme.conf" >> ~/.config/kitty/kitty.conf
+    export KITTY_THEMES_INSTALLED=1
     echo "✅ Kitty themes installed"
   else
+    export KITTY_THEMES_INSTALLED=0
     echo "🎨 Skipping kitty themes, using default from dotfiles"
+
   fi
 }
 setup_kitty_themes
+
 
 # ─────────────────────────────────────────
 # ⚙️ Dev mode fixes for virtual machines
@@ -108,5 +112,19 @@ enable_services() {
   sudo systemctl enable sddm
 }
 enable_services
+
+# ─────────────────────────────────────────
+# 🎛️ Kitty theme switcher
+# ─────────────────────────────────────────
+install_kitty_theme_switcher() {
+  echo "🎛️ Installing kitty-themes-switcher..."
+  git clone https://github.com/danillucky1234/kitty-themes-switcher.git ~/.config/kitty-themes-switcher
+  cd ~/.config/kitty-themes-switcher || exit
+  chmod +x kitty-theme-switcher
+  echo "✅ kitty-theme-switcher installed"
+}
+if [ "${KITTY_THEMES_INSTALLED:-0}" -eq 1 ]; then
+  install_kitty_theme_switcher
+fi
 
 echo "✅ All done! Reboot and log in via SDDM into Hyprland. Enjoy your rice 🍚"
