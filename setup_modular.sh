@@ -47,9 +47,9 @@ print_section "System Services"
 enable_services
 
 print_section "SDDM Theme Setup"
-setup_sddm_theme
+#setup_sddm_theme
 # Optionally, call customize_sddm for custom theme
-# customize_sddm
+customize_sddm
 
 print_section "Wallpaper Management"
 setup_wallpapers
