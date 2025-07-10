@@ -118,9 +118,15 @@ enable_services
 # ─────────────────────────────────────────
 install_kitty_theme_switcher() {
   echo "🎛️ Installing kitty-themes-switcher..."
-  git clone https://github.com/danillucky1234/kitty-themes-switcher.git ~/.config/kitty-themes-switcher
-  cd ~/.config/kitty-themes-switcher || exit
-  chmod +x scripts/kitty-theme-switcher
+
+  if [ -d "$HOME/.config/kitty-themes-switcher/.git" ]; then
+    echo "⚠️ kitty-themes-switcher already cloned, pulling latest changes..."
+    git -C "$HOME/.config/kitty-themes-switcher" pull
+  else
+    git clone https://github.com/danillucky1234/kitty-themes-switcher.git ~/.config/kitty-themes-switcher
+  fi
+
+  chmod +x ~/.config/kitty-themes-switcher/scripts/kitty-theme-switcher
   mkdir -p ~/.local/bin
   ln -sf ~/.config/kitty-themes-switcher/scripts/kitty-theme-switcher ~/.local/bin/kitty-theme-switcher
   echo "✅ kitty-theme-switcher installed and linked to ~/.local/bin"
