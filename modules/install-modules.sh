@@ -5,11 +5,8 @@ MOD_DIR="$HOME/dotfiles/modules"
 
 declare -a MODULES=(
   "hyprlock-idle"
-  # Add more as you create them
   "swww"
   "rofi"
-  # "eww-widgets"
-  # "rofi-config"
 )
 
 for mod in "${MODULES[@]}"; do
