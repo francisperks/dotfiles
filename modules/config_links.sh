@@ -9,7 +9,7 @@ link_configs() {
     echo "✅ Linked $cfg"
   done
 
-  mkdir -p "$HOME/.local/bin" "$HOME/.local/share/applications"
+  mkdir -p "$HOME/.local/bin" "$HOME/.local/share/applications" 2>/dev/null
 
   ln -sf "$PWD/local/bin/kitty-theme-picker.sh" "$HOME/.local/bin/kitty-theme-picker.sh"
   chmod +x "$HOME/.local/bin/kitty-theme-picker.sh"

@@ -13,8 +13,8 @@ setup_wallpapers() {
     pywal
   
   # Create wallpaper directories
-  mkdir -p "$HOME/Pictures/Wallpapers"
-  mkdir -p "$HOME/.config/variety"
+  mkdir -p "$HOME/Pictures/Wallpapers" 2>/dev/null
+  mkdir -p "$HOME/.config/variety" 2>/dev/null
   
   # Download some high-quality wallpapers
   download_wallpapers
