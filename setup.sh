@@ -99,18 +99,20 @@ else
 fi
 
 # ─────────────────────────────────────────────
-# 🔐 Optional: Install Hyprlock + Hypridle Module
+# 🔐 Optional: Install additional modules
 # ─────────────────────────────────────────────
-read -p "👉 Install Hyprlock + Hypridle module? (y/N): " LOCKMOD
-if [[ "$LOCKMOD" =~ ^[Yy]$ ]]; then
-  LOCK_MODULE="$HOME/dotfiles/modules/hyprlock-idle/setup.sh"
-  if [ -f "$LOCK_MODULE" ]; then
-    chmod +x "$LOCK_MODULE"
-    "$LOCK_MODULE"
+MODULE_INSTALLER="$HOME/dotfiles/modules/install-modules.sh"
+read -p "📦 Run all available modules in modules/? (y/N): " RUNMODS
+if [[ "$RUNMODS" =~ ^[Yy]$ ]]; then
+  if [ -f "$MODULE_INSTALLER" ]; then
+    chmod +x "$MODULE_INSTALLER"
+    "$MODULE_INSTALLER"
   else
-    echo "❌ Hyprlock module not found at $LOCK_MODULE"
+    echo "❌ Module installer not found at $MODULE_INSTALLER"
   fi
 fi
+
+
 
 # ─────────────────────────────────────────────
 # 🎉 Final Message
