@@ -137,16 +137,16 @@ install_kitty_theme_switcher() {
     git clone https://github.com/danillucky1234/kitty-themes-switcher.git ~/.config/kitty-themes-switcher
   fi
 
-  chmod +x ~/.config/kitty-themes-switcher/kitty-theme-switcher.sh
+  chmod +x ~/.config/kitty-themes-switcher/kitty-themes-switcher.sh
   mkdir -p ~/.local/bin
-  ln -sf ~/.config/kitty-themes-switcher/kitty-theme-switcher.sh ~/.local/bin/kitty-theme-switcher
+  ln -sf ~/.config/kitty-themes-switcher/kitty-themes-switcher.sh ~/.local/bin/kitty-themes-switcher
 
   if ! grep -q 'export PATH="$HOME/.local/bin:$PATH"' ~/.bash_profile; then
     echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bash_profile
     echo "🔧 Added ~/.local/bin to PATH in ~/.bash_profile"
   fi
 
-  echo "✅ kitty-theme-switcher installed and linked to ~/.local/bin"
+  echo "✅ kitty-themes-switcher installed and linked to ~/.local/bin"
 }
 if [ "${KITTY_THEMES_INSTALLED:-0}" -eq 1 ]; then
   install_kitty_theme_switcher
