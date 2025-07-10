@@ -4,7 +4,7 @@ set -e
 echo "🚀 Setting up base Hyprland environment..."
 
 # ─────────────────────────────────────────────
-# 📦 Install essential packages
+# 📦 Install essential packages (from pacman)
 # ─────────────────────────────────────────────
 sudo pacman -Syu --noconfirm \
   hyprland kitty wofi waybar \
@@ -16,9 +16,26 @@ sudo pacman -Syu --noconfirm \
   wl-clipboard \
   networkmanager network-manager-applet \
   xdg-user-dirs unzip git base-devel \
-  noto-fonts ttf-jetbrains-mono playerctl pavucontrol \
-  sddm \
-  ttf-font-awesome ttf-material-icons ttf-nerd-fonts-symbols ttf-nerd-fonts-symbols-mono
+  noto-fonts playerctl pavucontrol sddm \
+  ttf-font-awesome ttf-nerd-fonts-symbols ttf-nerd-fonts-symbols-mono
+
+# ─────────────────────────────────────────────
+# 📦 Install ttf-jetbrains-mono-nerd from AUR
+# ─────────────────────────────────────────────
+if ! fc-list | grep -qi "JetBrainsMono Nerd"; then
+  echo "🔍 Installing JetBrainsMono Nerd Font from AUR..."
+
+  if ! command -v yay &>/dev/null; then
+    echo "📦 yay not found. Installing yay..."
+    git clone https://aur.archlinux.org/yay.git ~/yay
+    (cd ~/yay && makepkg -si --noconfirm)
+    rm -rf ~/yay
+  fi
+
+  yay -S --noconfirm ttf-jetbrains-mono-nerd
+else
+  echo "✅ JetBrainsMono Nerd Font already installed"
+fi
 
 # ─────────────────────────────────────────────
 # 🛠️ Enable essential services
