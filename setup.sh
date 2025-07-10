@@ -84,10 +84,17 @@ setup_kitty_themes() {
       echo "📥 Cloning kitty themes..."
       git clone https://github.com/dexpota/kitty-themes ~/.config/kitty-themes
     fi
+
     cp ~/.config/kitty-themes/themes/Afterglow.conf ~/.config/kitty/theme.conf
     grep -qxF "include theme.conf" ~/.config/kitty/kitty.conf || echo "include theme.conf" >> ~/.config/kitty/kitty.conf
     export KITTY_THEMES_INSTALLED=1
     echo "✅ Kitty themes ready"
+
+    # 🔗 Fix path for kitty-theme-switcher
+    if [ ! -d "$HOME/.config/kitty/themes" ]; then
+      ln -s "$HOME/.config/kitty-themes/themes" "$HOME/.config/kitty/themes"
+      echo "🔗 Linked kitty theme directory for switcher compatibility"
+    fi
   else
     export KITTY_THEMES_INSTALLED=0
     echo "🎨 Skipping kitty themes, using default from dotfiles"
