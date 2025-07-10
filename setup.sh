@@ -1,6 +1,14 @@
 #!/bin/bash
 set -e
 
+# ─────────────────────────────────────────────
+# 🛑 Check if running as root
+# ─────────────────────────────────────────────
+if [ "$EUID" -eq 0 ]; then
+  echo "❌ Please run this script as your user, not as root."
+  exit 1
+fi
+
 echo "🚀 Setting up base Hyprland environment..."
 
 # ─────────────────────────────────────────────
@@ -27,9 +35,9 @@ if ! fc-list | grep -qi "JetBrainsMono Nerd"; then
 
   if ! command -v yay &>/dev/null; then
     echo "📦 yay not found. Installing yay..."
-    git clone https://aur.archlinux.org/yay.git ~/yay
-    (cd ~/yay && makepkg -si --noconfirm)
-    rm -rf ~/yay
+    git clone https://aur.archlinux.org/yay.git /tmp/yay
+    (cd /tmp/yay && makepkg -si --noconfirm)
+    rm -rf /tmp/yay
   fi
 
   yay -S --noconfirm ttf-jetbrains-mono-nerd
@@ -91,6 +99,22 @@ else
 fi
 
 # ─────────────────────────────────────────────
+# 🔐 Optional: Install Hyprlock + Hypridle Module
+# ─────────────────────────────────────────────
+read -p "👉 Install Hyprlock + Hypridle module? (y/N): " LOCKMOD
+if [[ "$LOCKMOD" =~ ^[Yy]$ ]]; then
+  LOCK_MODULE="$HOME/dotfiles/modules/hyprlock-idle/setup.sh"
+  if [ -f "$LOCK_MODULE" ]; then
+    chmod +x "$LOCK_MODULE"
+    "$LOCK_MODULE"
+  else
+    echo "❌ Hyprlock module not found at $LOCK_MODULE"
+  fi
+fi
+
+# ─────────────────────────────────────────────
 # 🎉 Final Message
 # ─────────────────────────────────────────────
 echo "✅ All done! Reboot and log in to Hyprland via SDDM."
+read -p "🔁 Reboot now to start Hyprland? (y/N): " REBOOT
+[[ "$REBOOT" =~ ^[Yy]$ ]] && reboot
